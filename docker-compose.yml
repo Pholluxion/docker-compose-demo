@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+
+  mongo-db:
+    image: mongo
+
+    container_name: mongo
+
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo-user
+      - MONGO_INITDB_ROOT_PASSWORD=mongo-password
+
+    ports:
+      - "27017:27017"
+
+    volumes:
+      - mongo-data:/data/db
+
+  demo-app:
+    image: pholluxion/demo-app:v1.0
+
+    container_name: demo-app
+
+    ports:
+      - "3000:3000"
+
+    environment:
+      - USER_NAME=mongo-user
+      - USER_PWD=mongo-password
+      - DB_URL=mongo-db
+
+    depends_on:
+      - mongo-db
+
+networks:
+  demo-app-network:
+
+volumes:
+  mongo-data:
+      driver: local
